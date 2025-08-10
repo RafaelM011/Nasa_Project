@@ -1,4 +1,5 @@
-import launchesDB from './launches.mongo.js';
+import {launchesDB} from './launches.mongo.js';
+import { planetsDB } from './planets.mongo.js';
 
 const DEFAULT_FLIGHT_NUMBER = 100;
 const launch = {
@@ -23,6 +24,9 @@ export async function getAllLaunches(){
 }
 
 export async function addLaunch(launch){
+  const planetExists = await planetsDB.exists({keplerName: launch.target});
+  if(!planetExists) throw new Error("Target does not exists");
+
   await launchesDB.insertOne(
     {...launch,
       flightNumber: 1 + (await getLastFlightNumber()),
@@ -43,9 +47,7 @@ export async function deleteLaunch(launchId){
   const launchExists = await launchesDB.exists({flightNumber: launchId});
   if(!launchExists) return false;
 
-  await launchesDB.deleteOne({flightNumber: launchId});
+  await launchesDB.updateOne({flightNumber: launchId}, {success: false, upcoming: false});
 
   return true;
 }
-// TODO: DELETE SHOULD UPDATE SUCCESS AND UPCOMING TO FALSE, ADDING A LAUNCH SHOULD VERIFY IF PLANET EXISTS
-// TODO: VERSION YOUR API

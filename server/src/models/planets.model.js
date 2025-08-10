@@ -1,4 +1,4 @@
-import planetsDB from "./planets.mongo.js";
+import {planetsDB} from "./planets.mongo.js";
 import {parse} from "csv-parse";
 import fs from "fs";
 

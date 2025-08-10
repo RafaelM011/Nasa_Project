@@ -33,4 +33,4 @@ const launchesSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model('Launch', launchesSchema);
+export const launchesDB = mongoose.model('Launch', launchesSchema);
