@@ -13,9 +13,9 @@ const launch = {
   success: true,
 };
 
-(async function(){
+export async function bootLaunchesData(){
   await launchesDB.updateOne(launch,launch,{upsert: true});
-})()
+}
 
 export async function getAllLaunches(){
   const launches = await launchesDB.find({}, {"_id": 0, "__v": 0});

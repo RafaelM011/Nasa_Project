@@ -7,22 +7,22 @@ describe("Launches API", () => {
   afterAll( async() => await disconnectMongo());
 
   describe("Test GET /launches", () => {
-    test("Should respond with status 200", async () => {
+    test("Getting all lunaches should respond with status 200", async () => {
       await request(app)
-        .get("/launches")
+        .get("/v1/launches")
         .expect("Content-Type", /json/)
         .expect(200)
     });
   });
 
   describe("Test POST /launches", function(){
-    test("Should respond with status 201", async () => {
+    test("Adding a new launch should respond with status 201", async () => {
       await request(app)
-      .post("/launches")
+      .post("/v1/launches")
       .send({
         mission: "USS Enterprise",
         rocket: "NCC 1701-D",
-        target: "Kepler-186 f",
+        target: "Kepler-1410 b",
         launchDate: "January 4, 2028"
       })
       .expect("Content-Type", /json/)
@@ -31,7 +31,7 @@ describe("Launches API", () => {
 
     test("Should catch required properties", async () => {
       const response = await request(app)
-      .post("/launches")
+      .post("/v1/launches")
       .send({
         rocket: "NCC 1701-D",
         target: "Kepler-186 f",
@@ -45,7 +45,7 @@ describe("Launches API", () => {
 
     test("Should catch invalid date", async () => {
       const response = await request(app)
-      .post("/launches")
+      .post("/v1/launches")
       .send({
         mission: "USS Enterprise",
         rocket: "NCC 1701-D",

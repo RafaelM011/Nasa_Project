@@ -8,7 +8,7 @@ function isHabitablePlanet(planet){
     && planet["koi_prad"] < 1.6
 }
 
-(async function loadPlanetsData(){
+export async function bootPlanetsData(){
     await (() =>
       new Promise( (resolve, reject) => {
         fs.createReadStream(`data/kepler_data.csv`)
@@ -26,7 +26,7 @@ function isHabitablePlanet(planet){
           .on("error", reject)
       })
     )()
-})()
+}
 
 async function getAllPlanets(){
   return await planetsDB.find({}, { "_id": 0, "__v": 0});
