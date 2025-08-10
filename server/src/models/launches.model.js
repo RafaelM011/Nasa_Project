@@ -1,5 +1,6 @@
-import launches from './launches.mongo.js';
+import launchesDB from './launches.mongo.js';
 
+const DEFAULT_FLIGHT_NUMBER = 100;
 const launch = {
   flightNumber: 100,
   mission: "Kepler Exploration X",
@@ -12,30 +13,39 @@ const launch = {
 };
 
 (async function(){
-  await launches.updateOne(launch,launch,{upsert: true});
+  await launchesDB.updateOne(launch,launch,{upsert: true});
 })()
 
 export async function getAllLaunches(){
-  const launchesArray = await launches.find({}, {"_id": 0, "__v": 0});
+  const launches = await launchesDB.find({}, {"_id": 0, "__v": 0});
 
-  return launchesArray;
+  return launches;
 }
 
 export async function addLaunch(launch){
-  await launches.insertOne({...launch, flightNumber: 1 + (await getLastFlightNumber()), customers: [], upcoming: true, success: true});
+  await launchesDB.insertOne(
+    {...launch,
+      flightNumber: 1 + (await getLastFlightNumber()),
+      customers: [],
+      upcoming: true,
+      success: true
+    });
 }
 
 async function getLastFlightNumber() {
-  const launch = await launches.findOne().sort("-flightNumber");
+  const latestLaunch = await launchesDB.findOne().sort("-flightNumber");
 
-  return launch.flightNumber;
+  if(!latestLaunch) return DEFAULT_FLIGHT_NUMBER;
+  return latestLaunch.flightNumber;
 }
 
 export async function deleteLaunch(launchId){
-  const launchExists = await launches.exists({flightNumber: launchId});
+  const launchExists = await launchesDB.exists({flightNumber: launchId});
   if(!launchExists) return false;
 
-  await launches.deleteOne({flightNumber: launchId});
+  await launchesDB.deleteOne({flightNumber: launchId});
 
   return true;
 }
+// TODO: DELETE SHOULD UPDATE SUCCESS AND UPCOMING TO FALSE, ADDING A LAUNCH SHOULD VERIFY IF PLANET EXISTS
+// TODO: VERSION YOUR API

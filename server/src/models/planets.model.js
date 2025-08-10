@@ -1,4 +1,4 @@
-import planets from "./planets.mongo.js";
+import planetsDB from "./planets.mongo.js";
 import {parse} from "csv-parse";
 import fs from "fs";
 
@@ -15,7 +15,7 @@ function isHabitablePlanet(planet){
           .pipe(parse({comment: "#", columns: true}))
           .on("data", async planet => {
             if(isHabitablePlanet(planet)) {
-              await planets.updateOne(
+              await planetsDB.updateOne(
                 {keplerName: planet.kepler_name},
                 {keplerName: planet.kepler_name},
                 {upsert: true}
@@ -29,7 +29,7 @@ function isHabitablePlanet(planet){
 })()
 
 async function getAllPlanets(){
-  return await planets.find({}, { "_id": 0, "__v": 0});
+  return await planetsDB.find({}, { "_id": 0, "__v": 0});
 }
 
 export { getAllPlanets };
