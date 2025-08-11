@@ -8,24 +8,25 @@ function isHabitablePlanet(planet){
     && planet["koi_prad"] < 1.6
 }
 
-export async function bootPlanetsData(){
-    await (() =>
-      new Promise( (resolve, reject) => {
-        fs.createReadStream(`data/kepler_data.csv`)
-          .pipe(parse({comment: "#", columns: true}))
-          .on("data", async planet => {
-            if(isHabitablePlanet(planet)) {
-              await planetsDB.updateOne(
-                {keplerName: planet.kepler_name},
-                {keplerName: planet.kepler_name},
-                {upsert: true}
-              );
-            }
-          })
-          .on("end", resolve)
-          .on("error", reject)
-      })
-    )()
+export async function loadPlanetsData(){
+  console.log("Loading planets data...");
+  await (() =>
+    new Promise( (resolve, reject) => {
+      fs.createReadStream(`data/kepler_data.csv`)
+        .pipe(parse({comment: "#", columns: true}))
+        .on("data", async planet => {
+          if(isHabitablePlanet(planet)) {
+            await planetsDB.updateOne(
+              {keplerName: planet.kepler_name},
+              {keplerName: planet.kepler_name},
+              {upsert: true}
+            );
+          }
+        })
+        .on("end", resolve)
+        .on("error", reject)
+    })
+  )()
 }
 
 async function getAllPlanets(){
