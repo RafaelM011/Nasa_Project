@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { 
+import {
   withStyles,
   Appear,
   Link,
@@ -18,7 +18,7 @@ const styles = () => ({
 });
 
 const Upcoming = props => {
-  const { 
+  const {
     entered,
     launches,
     classes,
@@ -46,7 +46,7 @@ const Upcoming = props => {
   }, [launches, abortLaunch, classes.link]);
 
   return <Appear id="upcoming" animate show={entered}>
-    <Paragraph>Upcoming missions including both SpaceX launches and newly scheduled Zero to Mastery rockets.</Paragraph>
+    <Paragraph>Upcoming missions including both SpaceX and newly scheduled launches.</Paragraph>
     <Words animate>Warning! Clicking on the ✖ aborts the mission.</Words>
     <Table animate show={entered}>
       <table style={{tableLayout: "fixed"}}>

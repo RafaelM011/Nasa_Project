@@ -1,7 +1,9 @@
-import { getAllLaunches, addLaunch, deleteLaunch } from "#models/launches.model.js";
+import { getLaunches, addLaunch, deleteLaunch } from "#models/launches.model.js";
+import { getPagination } from "#root/services/query.js";
 
-export async function httpGetAllLaunches(_, res) {
-  return res.status(200).json(await getAllLaunches());
+export async function httpGetAllLaunches(req, res) {
+  const {skip, limit} = getPagination(req.query);
+  return res.status(200).json(await getLaunches(skip, limit));
 };
 
 export async function httpSubmitLaunch(req, res){

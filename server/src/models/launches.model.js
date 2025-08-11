@@ -61,15 +61,16 @@ function getCustomersFromLaunch(launch){
   return launch.payloads.flatMap( payload => payload.customers);
 }
 
-export async function getAllLaunches(){
-  const launches = await launchesDB.find({}, {"_id": 0, "__v": 0});
-
-  return launches;
+export async function getLaunches(skip, limit){
+  return await launchesDB
+  .find({}, {"_id": 0, "__v": 0})
+  .sort({flightNumber: 1})
+  .skip(skip)
+  .limit(limit);
 }
 
 export async function addLaunch(launch){
-  const planetExists = await launchExists({keplerName: launch.target});
-  if(!planetExists) throw new Error("Target does not exists");
+  if(!planetExists({keplerName: launch.target})) throw new Error("Target does not exists");
 
   await launchesDB.insertOne(
     {...launch,
@@ -78,6 +79,10 @@ export async function addLaunch(launch){
       upcoming: true,
       success: true
     });
+}
+
+async function planetExists(filter) {
+  return await planetsDB.exists(filter);
 }
 
 async function getLastFlightNumber() {
