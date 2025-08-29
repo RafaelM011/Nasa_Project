@@ -3,11 +3,10 @@ import cors from "cors";
 import { api_v1 } from "#routes/api.v1.js";
 
 const app = express();
-const origin = "http://localhost:4000";
+const ORIGIN = `http://${process.env.HOST}:${process.env.PORT}`;
+app.use(cors({ORIGIN}));
 
-app.use(cors({origin}));
-
-app.get("/", (_, res) => res.redirect(`${origin}/launch`))
+app.get("/", (_, res) => res.redirect(`${ORIGIN}/launch`))
 
 app.use(express.static("public"));
 app.use(express.json());
